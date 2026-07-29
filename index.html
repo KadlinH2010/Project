@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Girls Wrestling Growth Dashboard</title>
   <style>
-    :root { --ink:#11233d; --blue:#1769e0; --orange:#f4863b; --muted:#64748b; --line:#dfe7f1; --page:#f4f7fb; }
+    :root { --ink:#11233d; --blue:#1769e0; --orange:#f4863b; --muted:#64748b; --line:#dfe7f1; --page:#f1f3f5; }
     * { box-sizing:border-box; } body { max-width:1320px; margin:0 auto; padding:36px 24px 60px; background:var(--page); color:var(--ink); font-family:Arial,sans-serif; }
     h1 { margin:0; font-size:clamp(2rem,4vw,3.2rem); } h2 { margin:0; font-size:1.1rem; } p { color:var(--muted); line-height:1.5; }
     button { padding:11px 16px; border:0; border-radius:7px; background:var(--blue); color:#fff; font-size:1rem; font-weight:bold; cursor:pointer; } button:hover { background:#1057ba; }
@@ -15,7 +15,7 @@
     .kpi { padding:18px; border-top:4px solid var(--blue); } .kpi:nth-child(2) { border-top-color:#8b5cf6; } .kpi:nth-child(3) { border-top-color:#f4863b; } .kpi:nth-child(4) { border-top-color:#0ca678; } .kpi span { display:block; color:var(--muted); font-size:.78rem; font-weight:bold; letter-spacing:.04em; text-transform:uppercase; } .kpi strong { display:block; margin-top:8px; font-size:1.85rem; } .kpi small { color:var(--muted); }
     .charts { display:grid; grid-template-columns:1.2fr .8fr; gap:20px; margin-bottom:20px; } .card { padding:20px; } .charts .card:first-child { background:linear-gradient(135deg,#fff 55%,#edf5ff); } .charts .card:last-child { background:linear-gradient(135deg,#fff 55%,#fff3e8); } .card p { margin:5px 0 14px; font-size:.88rem; } canvas { display:block; width:100%; height:320px; }
     .toolbar { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:15px 0; } input,select { padding:9px 11px; border:1px solid #bcc9d9; border-radius:7px; font:inherit; }
-    .table-wrap { max-height:520px; overflow:auto; border:1px solid var(--line); border-radius:8px; } table { border-collapse:collapse; width:100%; min-width:720px; background:#fff; } th,td { padding:11px 14px; border-bottom:1px solid #e8edf4; text-align:left; } th { position:sticky; top:0; background:#eff5ff; color:#40536c; font-size:.78rem; text-transform:uppercase; } td:not(:first-child),th:not(:first-child) { text-align:right; } tbody tr:hover { background:#f7faff; } .change-positive { color:#07845b; font-weight:bold; } .change-negative { color:#c2410c; font-weight:bold; } .status { margin:12px 0 0; font-size:.84rem; color:var(--muted); }
+    .table-wrap { max-height:520px; overflow:auto; border:1px solid var(--line); border-radius:8px; } table { border-collapse:collapse; width:100%; min-width:720px; background:#fff; } th,td { padding:11px 14px; border-bottom:1px solid #e8edf4; text-align:left; } th { position:sticky; top:0; background:#eff5ff; color:#40536c; font-size:.78rem; text-transform:uppercase; } td:not(:first-child),th:not(:first-child) { text-align:right; } tbody tr:hover { background:#f7faff; } .change-positive { color:#07845b; font-weight:bold; } .change-negative { color:#c2410c; font-weight:bold; } .status { margin:12px 0 0; font-size:.84rem; color:var(--muted); } .growth-card { margin-top:20px; } #growthChart { height:380px; }
     @media (max-width:850px) { .kpis { grid-template-columns:repeat(2,1fr); } .charts { grid-template-columns:1fr; } } @media (max-width:480px) { body { padding:24px 14px; } .kpis { grid-template-columns:1fr 1fr; } .kpi strong { font-size:1.4rem; } }
   </style>
 </head>
@@ -43,6 +43,11 @@
       <div class="table-wrap"><table><thead><tr><th>State</th><th id="fromHeader">Starting season</th><th id="toHeader">Ending season</th><th>Participant change</th><th>Percent change</th></tr></thead><tbody id="tableBody"></tbody></table></div>
       <p class="status" id="tableStatus"></p>
     </section>
+    <section class="card growth-card">
+      <h2>State participation over time</h2>
+      <div class="toolbar"><p id="growthChartCaption">Choose a state to see its participants in every reporting season.</p><select id="stateGrowthSelect" aria-label="State for growth chart"></select></div>
+      <canvas id="growthChart" aria-label="State growth bar chart"></canvas>
+    </section>
   </main>
   <script>
     const fmt = new Intl.NumberFormat('en-US');
@@ -50,7 +55,7 @@
     const $ = selector => document.querySelector(selector);
     $('#loadButton').addEventListener('click', () => $('#fileInput').click());
     $('#fileInput').addEventListener('change', event => { const file=event.target.files[0]; if (!file) return; const reader=new FileReader(); reader.onload=() => loadData(reader.result); reader.readAsText(file); });
-    $('#search').addEventListener('input', renderTable); $('#fromYear').addEventListener('change', renderTable); $('#toYear').addEventListener('change', renderTable);
+    $('#search').addEventListener('input', renderTable); $('#fromYear').addEventListener('change', renderComparisons); $('#toYear').addEventListener('change', renderComparisons); $('#stateGrowthSelect').addEventListener('change', drawGrowthChart);
 
     function loadData(text) {
       const lines=text.trim().split(/\r?\n/); const header=lines.shift().split(',');
@@ -60,7 +65,8 @@
       national=years.map(year => ({ year, total:records.filter(row => row.year===year).reduce((sum,row) => sum+row.participants,0) }));
       ['#fromYear','#toYear'].forEach(selector => $(selector).innerHTML=years.map(year => `<option value="${year}">${year}</option>`).join(''));
       $('#fromYear').value=years[0]; $('#toYear').value=years.at(-1);
-      $('#empty').style.display='none'; $('#dashboard').style.display='block'; renderSummary(); renderTable(); requestAnimationFrame(drawCharts);
+      $('#stateGrowthSelect').innerHTML=[...new Set(records.map(row=>row.state))].sort().map(state => `<option value="${state}">${state}</option>`).join('');
+      $('#empty').style.display='none'; $('#dashboard').style.display='block'; renderSummary(); renderTable(); requestAnimationFrame(() => { drawCharts(); drawGrowthChart(); });
     }
     function renderSummary() {
       const first=national[0], latest=national.at(-1), previous=national.at(-2), increase=latest.total-first.total, recent=latest.total-previous.total;
@@ -70,11 +76,13 @@
       $('#activeStates').textContent=records.filter(row => row.year===latest.year && row.participants>0).length;
     }
     function renderTable() { const term=$('#search').value.toLowerCase(), from=$('#fromYear').value, to=$('#toYear').value; const states=[...new Set(records.map(row=>row.state))]; const values=new Map(records.map(row=>[`${row.state}|${row.year}`,row.participants])); const rows=states.map(state=>{const start=values.get(`${state}|${from}`)||0,end=values.get(`${state}|${to}`)||0,change=end-start;return {state,start,end,change,percent:start?change/start*100:null};}).filter(row=>row.state.toLowerCase().includes(term)).sort((a,b)=>b.change-a.change); $('#fromHeader').textContent=from; $('#toHeader').textContent=to; $('#tableBody').innerHTML=rows.map(row=>`<tr><td><strong>${row.state}</strong></td><td>${fmt.format(row.start)}</td><td>${fmt.format(row.end)}</td><td class="${row.change>=0?'change-positive':'change-negative'}">${row.change>=0?'+':''}${fmt.format(row.change)}</td><td class="${row.percent===null?'':row.percent>=0?'change-positive':'change-negative'}">${row.percent===null?'New / no baseline':`${row.percent>=0?'+':''}${Math.round(row.percent)}%`}</td></tr>`).join(''); $('#tableStatus').textContent=`Showing ${fmt.format(rows.length)} states: ${from} compared with ${to}.`; }
+    function renderComparisons() { renderTable(); }
     function setupCanvas(canvas) { const box=canvas.getBoundingClientRect(), ratio=devicePixelRatio||1; canvas.width=box.width*ratio; canvas.height=box.height*ratio; const ctx=canvas.getContext('2d'); ctx.scale(ratio,ratio); return [ctx,box.width,box.height]; }
     function drawCharts() { drawLineChart(); drawBarChart(); }
     function drawLineChart() { const [ctx,w,h]=setupCanvas($('#trendChart')), pad={left:58,right:18,top:16,bottom:44}, max=Math.max(...national.map(d=>d.total)); ctx.clearRect(0,0,w,h); ctx.font='12px Arial'; ctx.fillStyle='#64748b'; ctx.strokeStyle='#dfe8f5'; for(let i=0;i<4;i++){const y=pad.top+(h-pad.top-pad.bottom)*i/3, value=Math.round(max*(1-i/3));ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(w-pad.right,y);ctx.stroke();ctx.fillText(fmt.format(value),4,y+4);} const x=i=>pad.left+i*(w-pad.left-pad.right)/(national.length-1), y=value=>pad.top+(max-value)/max*(h-pad.top-pad.bottom); ctx.beginPath(); national.forEach((d,i)=>i?ctx.lineTo(x(i),y(d.total)):ctx.moveTo(x(i),y(d.total)));ctx.lineTo(x(national.length-1),h-pad.bottom);ctx.lineTo(x(0),h-pad.bottom);ctx.closePath();const fill=ctx.createLinearGradient(0,pad.top,0,h-pad.bottom);fill.addColorStop(0,'rgba(23,105,224,.22)');fill.addColorStop(1,'rgba(23,105,224,.02)');ctx.fillStyle=fill;ctx.fill();ctx.beginPath();national.forEach((d,i)=>i?ctx.lineTo(x(i),y(d.total)):ctx.moveTo(x(i),y(d.total)));ctx.strokeStyle='#000';ctx.lineWidth=4;ctx.stroke();national.forEach((d,i)=>{ctx.beginPath();ctx.arc(x(i),y(d.total),4,0,Math.PI*2);ctx.fillStyle='#1769e0';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();if(i===0||i===national.length-1||i%3===0){ctx.fillStyle='#64748b';ctx.fillText(d.year,x(i)-16,h-18);}}); }
     function drawBarChart() { const latestYear=years.at(-1), leaders=records.filter(row=>row.year===latestYear).sort((a,b)=>b.participants-a.participants).slice(0,10), [ctx,w,h]=setupCanvas($('#stateChart')), left=105,right=46,top=10,rowHeight=(h-top-26)/leaders.length,max=Math.max(...leaders.map(d=>d.participants)), colors=['#1769e0','#8b5cf6','#ec4899','#f4863b','#eab308','#0ca678','#14b8a6','#0ea5e9','#6366f1','#f43f5e']; ctx.clearRect(0,0,w,h);ctx.font='12px Arial'; leaders.forEach((d,i)=>{const y=top+i*rowHeight;ctx.fillStyle='#42546c';ctx.fillText(d.state,3,y+rowHeight*.65);ctx.fillStyle='#edf2f8';ctx.fillRect(left,y+4,w-left-right,rowHeight*.55);const width=(w-left-right)*d.participants/max;ctx.fillStyle=colors[i];ctx.fillRect(left,y+4,width,rowHeight*.55);ctx.fillStyle='#42546c';ctx.fillText(fmt.format(d.participants),w-right+5,y+rowHeight*.65);}); }
-    window.addEventListener('resize', () => { if(records.length) drawCharts(); });
+    function drawGrowthChart() { const state=$('#stateGrowthSelect').value,data=years.map(year=>({year,participants:records.find(row=>row.state===state&&row.year===year)?.participants||0})),[ctx,w,h]=setupCanvas($('#growthChart')),pad={left:58,right:18,top:18,bottom:60},max=Math.max(...data.map(row=>row.participants),1),chartWidth=w-pad.left-pad.right,chartHeight=h-pad.top-pad.bottom,barWidth=Math.max(6,chartWidth/data.length*.62);ctx.clearRect(0,0,w,h);ctx.font='11px Arial';ctx.fillStyle='#64748b';ctx.strokeStyle='#dfe8f5';for(let i=0;i<4;i++){const y=pad.top+chartHeight*i/3,value=Math.round(max*(1-i/3));ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(w-pad.right,y);ctx.stroke();ctx.fillText(fmt.format(value),4,y+4);}data.forEach((row,i)=>{const x=pad.left+(i+.5)*chartWidth/data.length,y=pad.top+chartHeight-(row.participants/max)*chartHeight;ctx.fillStyle='#1769e0';ctx.fillRect(x-barWidth/2,y,barWidth,pad.top+chartHeight-y);ctx.save();ctx.translate(x+3,h-19);ctx.rotate(-Math.PI/4);ctx.fillStyle='#64748b';ctx.fillText(row.year,0,0);ctx.restore();if(i===0||i===data.length-1){ctx.fillStyle='#11233d';ctx.fillText(fmt.format(row.participants),x-barWidth/2,y-5);}}); $('#growthChartCaption').textContent=`Girls wrestling participants in ${state}, shown for every reporting season.`; }
+    window.addEventListener('resize', () => { if(records.length) { drawCharts(); drawGrowthChart(); } });
   </script>
 </body>
 </html>
