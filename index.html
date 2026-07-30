@@ -84,7 +84,7 @@
     </section>
     <section id="stateGrowthCard" class="card chart-card growth-card is-hidden">
       <h2>State participation over time</h2>
-      <div class="toolbar"><p id="growthChartCaption">Choose one or more states to compare participants across reporting seasons. Hold Ctrl (Windows) or Command (Mac) while selecting to add states.</p><select id="stateGrowthSelect" aria-label="States for growth chart" multiple></select><div class="toolbar-actions"><button id="downloadGrowthChart" type="button">Download chart</button><button id="shareGrowthChart" type="button">Share trend</button></div></div>
+      <div class="toolbar"><div><p id="growthChartCaption">Choose one or more states to compare participants across reporting seasons.</p><p id="growthSelectHelp" class="status">To add a state, hold Ctrl (Windows) or Command (Mac) while clicking it.</p></div><select id="stateGrowthSelect" aria-label="States for growth chart" aria-describedby="growthSelectHelp" multiple></select><div class="toolbar-actions"><button id="downloadGrowthChart" type="button">Download chart</button><button id="shareGrowthChart" type="button">Share trend</button></div></div>
       <canvas id="growthChart" aria-label="State growth bar chart"></canvas>
     </section>
   </main>
