@@ -22,6 +22,7 @@
     @media (max-width:1120px) { #dashboard { grid-template-columns:1fr; } #dashboard > .dashboard-overview,#dashboard > .kpis,#dashboard > .story-strip,#dashboard > .card-controls,#dashboard > .charts,#dashboard > #comparisonCard,#dashboard > #stateGrowthCard { grid-column:1; } .fact-rail { display:none; } } @media (max-width:850px) { .kpis { grid-template-columns:repeat(2,1fr); } .charts,.story-strip { grid-template-columns:1fr; } .story-photo { min-height:260px; } .card-controls { grid-template-columns:repeat(2,1fr); } .intro { flex-direction:column; padding:34px 24px; } } @media (max-width:560px) { .dashboard-overview { align-items:flex-start; flex-direction:column; } .growth-visual { grid-template-columns:1fr; } .mini-photo { min-height:180px; } } @media (max-width:480px) { body { padding:24px 14px; } .kpis { grid-template-columns:1fr 1fr; } .kpi strong { font-size:1.4rem; } .card-controls { grid-template-columns:1fr; } }
     /* Keep every card in the KPI row at one shared height. */
     #dashboard > .kpis { align-self:stretch; grid-auto-rows:1fr; }
+    .fact-rail { margin-bottom:var(--space); }
     .kpi { height:100%; }
   </style>
 </head>
