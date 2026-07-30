@@ -9,7 +9,7 @@
     * { box-sizing:border-box; } body { max-width:1320px; margin:0 auto; padding:36px 24px 60px; background:radial-gradient(circle at 8% 2%,#eaf2ff 0,transparent 25rem),radial-gradient(circle at 96% 18%,#fff2e6 0,transparent 23rem),var(--page); color:var(--ink); font-family:"Segoe UI",Arial,sans-serif; }
     h1 { margin:0; color:#fff; font-family:Georgia,"Times New Roman",serif; font-size:clamp(2.25rem,4vw,3.5rem); font-weight:700; letter-spacing:-.035em; } h2 { margin:0; font-size:1.1rem; letter-spacing:-.01em; } p { color:var(--muted); line-height:1.5; }
     button { padding:11px 16px; border:0; border-radius:7px; background:var(--blue); color:#fff; font-size:1rem; font-weight:700; cursor:pointer; transition:transform .18s ease,box-shadow .18s ease,background .18s ease; } button:hover { background:#1057ba; transform:translateY(-2px); box-shadow:0 5px 12px rgba(16,41,71,.2); }
-    .intro { position:relative; isolation:isolate; display:flex; justify-content:center; align-items:center; gap:var(--space); min-height:182px; padding:38px 150px; overflow:hidden; margin-bottom:var(--space); border:1px solid rgba(255,255,255,.24); border-radius:20px; background:linear-gradient(120deg,#0b1c35,#174d86); box-shadow:0 18px 36px rgba(16,41,71,.2); } .intro::before,.intro::after { position:absolute; z-index:-1; content:""; border-radius:50%; border:1px solid rgba(255,255,255,.14); } .intro::before { width:300px; height:300px; right:-110px; top:-145px; } .intro::after { width:180px; height:180px; left:-75px; bottom:-115px; } .intro > div:first-child { text-align:center; } .intro > div:last-child { position:absolute; right:28px; top:50%; transform:translateY(-50%); } .intro p { margin:10px auto 0; max-width:720px; color:#d8e8fb; } .intro button { background:var(--orange); color:#162438; box-shadow:0 4px 12px rgba(0,0,0,.18); } .intro button:hover { background:#ff9b52; }
+    .intro { position:relative; isolation:isolate; display:flex; justify-content:center; align-items:center; gap:var(--space); min-height:182px; padding:38px 150px; overflow:hidden; margin-bottom:var(--space); border:1px solid rgba(255,255,255,.24); border-radius:20px; background:linear-gradient(120deg,#0b1c35,#174d86); box-shadow:0 18px 36px rgba(16,41,71,.2); } .intro::before,.intro::after { position:absolute; z-index:-1; content:""; border-radius:50%; border:1px solid rgba(255,255,255,.14); } .intro::before { width:300px; height:300px; right:-110px; top:-145px; } .intro::after { width:180px; height:180px; left:-75px; bottom:-115px; } .intro > div:first-child { text-align:center; } #loadStatus { position:absolute; right:28px; top:50%; transform:translateY(-50%); padding:8px 10px; border-radius:999px; background:rgba(255,255,255,.14); color:#d8e8fb; font-size:.78rem; font-weight:700; } .intro p { margin:10px auto 0; max-width:720px; color:#d8e8fb; }
     .empty { padding:38px; background:#fff; border:1px dashed #52667e; border-radius:12px; text-align:center; color:var(--muted); box-shadow:0 5px 16px rgba(28,52,84,.06); }
     #dashboard { display:none; grid-template-columns:170px minmax(0,1fr) 170px; gap:var(--space); align-items:start; } #dashboard > .dashboard-overview { grid-column:2; grid-row:1; } #dashboard > .kpis { grid-column:2; grid-row:2; } #dashboard > .card-controls { grid-column:1 / -1; grid-row:3; } #dashboard > .charts { grid-column:2; grid-row:4; } #dashboard > #comparisonCard { grid-column:2; grid-row:5; } #dashboard > #stateGrowthCard { grid-column:2; grid-row:6; } .dashboard-overview { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:17px 20px; margin-bottom:var(--space); border:1px solid #a9c0dc; border-radius:14px; background:linear-gradient(100deg,#edf5ff,#fff); } .dashboard-overview h2 { font-size:1.05rem; } .dashboard-overview p { margin:4px 0 0; font-size:.88rem; } .data-badge { flex:0 0 auto; padding:7px 10px; border-radius:999px; background:#dff7ef; color:#087657; font-size:.72rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; } .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space); margin-bottom:var(--space); } .kpi,.card { background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:0 6px 18px rgba(28,52,84,.1); }
     .kpi { position:relative; padding:18px; overflow:hidden; border-top:5px solid var(--blue); transition:transform .18s ease,box-shadow .18s ease; } .kpi::after { position:absolute; right:-18px; bottom:-28px; width:92px; height:92px; content:""; border-radius:50%; background:rgba(23,105,224,.07); } .kpi:nth-child(2) { border-top-color:#8b5cf6; } .kpi:nth-child(2)::after { background:rgba(139,92,246,.07); } .kpi:nth-child(3) { border-top-color:var(--orange); } .kpi:nth-child(3)::after { background:rgba(244,134,59,.08); } .kpi:nth-child(4) { border-top-color:var(--mint); } .kpi:nth-child(4)::after { background:rgba(12,166,120,.08); } .kpi span { display:block; color:var(--muted); font-size:.78rem; font-weight:bold; letter-spacing:.04em; text-transform:uppercase; } .kpi strong { position:relative; z-index:1; display:block; margin-top:8px; font-size:1.85rem; } .kpi small { position:relative; z-index:1; color:var(--muted); }
@@ -25,9 +25,9 @@
 <body>
   <section class="intro">
     <div><h1>Girls Wrestling Growth</h1><p>High school girls wrestling participation grew from 6,134 in 2009–10 to 74,064 in 2024–25—more than twelvefold within the span of 15 years.</p></div>
-    <div><button id="loadButton">Load Data</button><input id="fileInput" type="file" accept=".csv,text/csv" hidden></div>
+    <div aria-live="polite" id="loadStatus">Loading participation data…</div>
   </section>
-  <div id="empty" class="empty">Click <strong>Load Data</strong>, then choose <code>girls_wrestling.csv</code>.</div>
+  <div id="empty" class="empty">Loading <code>girls_wrestling.csv</code>…</div>
   <main id="dashboard">
     <aside class="fact-rail fact-left" aria-label="Girls wrestling facts">
       <article class="fact-card"><span class="eyebrow">Growth story</span><strong>12× larger</strong><p>National participation has grown more than twelvefold since 2009–10.</p></article>
@@ -73,23 +73,35 @@
     let trendAnimation;
     let records = [], years = [], national = [];
     const $ = selector => document.querySelector(selector);
-    $('#loadButton').addEventListener('click', () => $('#fileInput').click());
-    $('#fileInput').addEventListener('change', event => { const file=event.target.files[0]; if (!file) return; const reader=new FileReader(); reader.onload=() => loadData(reader.result); reader.readAsText(file); });
     $('#search').addEventListener('input', renderTable); $('#fromYear').addEventListener('change', renderComparisons); $('#toYear').addEventListener('change', renderComparisons); $('#stateGrowthSelect').addEventListener('change', drawGrowthChart);
     $('#playTrend').addEventListener('click', animateTrend);
     document.querySelectorAll('[data-card]').forEach(button => button.addEventListener('click', () => { const card=$(`#${button.dataset.card}`), hidden=card.classList.toggle('is-hidden'); button.textContent=`${hidden?'Show':'Hide'} ${button.dataset.label}`; if(!hidden) requestAnimationFrame(() => { if(['nationalTrendCard','leadingStatesCard'].includes(button.dataset.card)) drawCharts(); if(button.dataset.card==='stateGrowthCard') drawGrowthChart(); }); }));
     document.querySelectorAll('.chart-card').forEach(card => card.addEventListener('click', event => { if(event.target.closest('button,select,input')) return; card.classList.toggle('is-expanded'); requestAnimationFrame(() => { if(['nationalTrendCard','leadingStatesCard'].includes(card.id)) drawCharts(); if(card.id==='stateGrowthCard') drawGrowthChart(); }); }));
 
+    async function loadBundledData() {
+      try {
+        const response = await fetch('girls_wrestling.csv');
+        if (!response.ok) throw new Error(`Request failed (${response.status})`);
+        if (!loadData(await response.text())) throw new Error('The file has an invalid format');
+        $('#loadStatus').textContent = 'Participation data loaded';
+      } catch (error) {
+        console.error('Unable to load girls_wrestling.csv:', error);
+        $('#loadStatus').textContent = 'Data unavailable';
+        $('#empty').innerHTML = 'Unable to load <code>girls_wrestling.csv</code>. Please refresh the page or verify that the file was included in the GitHub Pages deployment.';
+      }
+    }
+
     function loadData(text) {
       const lines=text.trim().split(/\r?\n/); const header=lines.shift().split(',');
       records=lines.map(line => { const values=line.split(','); return { year:values[0], state:values[1], participants:Number(values[2]) || 0 }; });
-      if (!header.includes('year') || !records.length) return alert('Please choose a valid girls wrestling CSV file.');
+      if (!header.includes('year') || !records.length) return false;
       years=[...new Set(records.map(row => row.year))];
       national=years.map(year => ({ year, total:records.filter(row => row.year===year).reduce((sum,row) => sum+row.participants,0) }));
       ['#fromYear','#toYear'].forEach(selector => $(selector).innerHTML=years.map(year => `<option value="${year}">${year}</option>`).join(''));
       $('#fromYear').value=years[0]; $('#toYear').value=years.at(-1);
       $('#stateGrowthSelect').innerHTML=[...new Set(records.map(row=>row.state))].sort().map(state => `<option value="${state}">${state}</option>`).join('');
       $('#empty').style.display='none'; $('#dashboard').style.display='grid'; renderSummary(); renderTable(); requestAnimationFrame(() => { drawCharts(); drawGrowthChart(); });
+      return true;
     }
     function renderSummary() {
       const first=national[0], latest=national.at(-1), previous=national.at(-2), increase=latest.total-first.total, recent=latest.total-previous.total;
@@ -112,6 +124,7 @@
     function drawBarChart() { const latestYear=years.at(-1), leaders=records.filter(row=>row.year===latestYear).sort((a,b)=>b.participants-a.participants).slice(0,10), [ctx,w,h]=setupCanvas($('#stateChart')), left=105,right=46,top=10,rowHeight=(h-top-26)/leaders.length,max=Math.max(...leaders.map(d=>d.participants)), colors=['#1769e0','#8b5cf6','#ec4899','#f4863b','#eab308','#0ca678','#14b8a6','#0ea5e9','#6366f1','#f43f5e']; ctx.clearRect(0,0,w,h);ctx.font='12px Arial'; leaders.forEach((d,i)=>{const y=top+i*rowHeight;ctx.fillStyle='#42546c';ctx.fillText(d.state,3,y+rowHeight*.65);ctx.fillStyle='#edf2f8';ctx.fillRect(left,y+4,w-left-right,rowHeight*.55);const width=(w-left-right)*d.participants/max;ctx.fillStyle=colors[i];ctx.fillRect(left,y+4,width,rowHeight*.55);ctx.fillStyle='#42546c';ctx.fillText(fmt.format(d.participants),w-right+5,y+rowHeight*.65);}); }
     function drawGrowthChart() { const state=$('#stateGrowthSelect').value,data=years.map(year=>({year,participants:records.find(row=>row.state===state&&row.year===year)?.participants||0})),[ctx,w,h]=setupCanvas($('#growthChart')),pad={left:58,right:18,top:18,bottom:60},max=Math.max(...data.map(row=>row.participants),1),chartWidth=w-pad.left-pad.right,chartHeight=h-pad.top-pad.bottom,barWidth=Math.max(6,chartWidth/data.length*.62);ctx.clearRect(0,0,w,h);ctx.font='11px Arial';ctx.fillStyle='#64748b';ctx.strokeStyle='#dfe8f5';for(let i=0;i<4;i++){const y=pad.top+chartHeight*i/3,value=Math.round(max*(1-i/3));ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(w-pad.right,y);ctx.stroke();ctx.fillText(fmt.format(value),4,y+4);}data.forEach((row,i)=>{const x=pad.left+(i+.5)*chartWidth/data.length,y=pad.top+chartHeight-(row.participants/max)*chartHeight;ctx.fillStyle='#1769e0';ctx.fillRect(x-barWidth/2,y,barWidth,pad.top+chartHeight-y);ctx.strokeStyle='#000';ctx.lineWidth=1;ctx.strokeRect(x-barWidth/2,y,barWidth,pad.top+chartHeight-y);ctx.save();ctx.translate(x+3,h-19);ctx.rotate(-Math.PI/4);ctx.fillStyle='#64748b';ctx.fillText(row.year,0,0);ctx.restore();if(i===0||i===data.length-1){ctx.fillStyle='#11233d';ctx.fillText(fmt.format(row.participants),x-barWidth/2,y-5);}}); $('#growthChartCaption').textContent=`Girls wrestling participants in ${state}, shown for every reporting season.`; }
     window.addEventListener('resize', () => { if(records.length) { drawCharts(); drawGrowthChart(); } });
+    loadBundledData();
   </script>
 </body>
 </html>
