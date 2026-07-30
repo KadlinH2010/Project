@@ -84,7 +84,7 @@
     </section>
     <section id="stateGrowthCard" class="card chart-card growth-card is-hidden">
       <h2>State participation over time</h2>
-      <div class="toolbar"><div><p id="growthChartCaption">Choose one or more states to compare participants across reporting seasons.</p><p id="growthSelectHelp" class="status">To add a state, hold Ctrl (Windows) or Command (Mac) while clicking it.</p></div><select id="stateGrowthSelect" aria-label="States for growth chart" aria-describedby="growthSelectHelp" multiple></select><div class="toolbar-actions"><button id="downloadGrowthChart" type="button">Download chart</button><button id="shareGrowthChart" type="button">Share trend</button></div></div>
+      <div class="toolbar"><div><p id="growthChartCaption">Choose one or more states to compare participants across reporting seasons.</p><p id="growthSelectHelp" class="status">To add a state, hold Ctrl (Windows) or Command (Mac) while clicking it.</p></div><select id="stateGrowthSelect" aria-label="States for growth chart" aria-describedby="growthSelectHelp" multiple></select><div class="toolbar-actions"><button id="selectAllStates" type="button">Select all states</button><button id="downloadGrowthChart" type="button">Download chart</button><button id="shareGrowthChart" type="button">Share trend</button></div></div>
       <canvas id="growthChart" aria-label="State growth bar chart"></canvas>
     </section>
   </main>
@@ -94,6 +94,7 @@
     let records = [], years = [], national = [];
     const $ = selector => document.querySelector(selector);
     $('#search').addEventListener('input', renderTable); $('#fromYear').addEventListener('change', renderComparisons); $('#toYear').addEventListener('change', renderComparisons); $('#stateGrowthSelect').addEventListener('change', () => { ensureStateSelection(); drawGrowthChart(); });
+    $('#selectAllStates').addEventListener('click', () => { [...$('#stateGrowthSelect').options].forEach(option => option.selected=true); drawGrowthChart(); });
     $('#downloadComparison').addEventListener('click', downloadComparison); $('#shareComparison').addEventListener('click', shareComparison); $('#downloadGrowthChart').addEventListener('click', downloadGrowthChart); $('#shareGrowthChart').addEventListener('click', shareGrowthChart);
     $('#playTrend').addEventListener('click', animateTrend);
     document.querySelectorAll('[data-card]').forEach(button => button.addEventListener('click', () => { const card=$(`#${button.dataset.card}`), hidden=card.classList.toggle('is-hidden'); button.textContent=`${hidden?'Show':'Hide'} ${button.dataset.label}`; if(!hidden) requestAnimationFrame(() => { if(['nationalTrendCard','leadingStatesCard'].includes(button.dataset.card)) drawCharts(); if(button.dataset.card==='stateGrowthCard') drawGrowthChart(); }); }));
