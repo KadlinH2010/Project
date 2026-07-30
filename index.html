@@ -40,7 +40,6 @@
     </aside>
     <section class="dashboard-overview" aria-live="polite">
       <div><h2 id="insightHeadline">A nationwide footprint</h2><p id="insightText">Load the data to see how broadly girls wrestling has spread.</p></div>
-      <span class="data-badge" id="dataBadge">Participation data</span>
     </section>
     <section class="kpis">
       <article class="kpi"><span>Latest participation</span><strong id="latestTotal">—</strong><small id="latestYear">—</small></article>
@@ -122,7 +121,6 @@
       const latestActiveStates=new Set(records.filter(row=>row.year===latest.year&&row.participants>0).map(row=>row.state)).size;
       $('#insightHeadline').textContent=`A presence in ${fmt.format(latestActiveStates)} states`;
       $('#insightText').textContent=`Girls wrestling participation was reported in ${fmt.format(latestActiveStates-firstActiveStates)} more states than in ${first.year}, expanding from ${fmt.format(firstActiveStates)} to ${fmt.format(latestActiveStates)}.`;
-      $('#dataBadge').textContent=`${years.length} seasons tracked`;
     }
     function renderTable() { const term=$('#search').value.toLowerCase(), from=$('#fromYear').value, to=$('#toYear').value; const states=[...new Set(records.map(row=>row.state))]; const values=new Map(records.map(row=>[`${row.state}|${row.year}`,row.participants])); const rows=states.map(state=>{const start=values.get(`${state}|${from}`)||0,end=values.get(`${state}|${to}`)||0,change=end-start;return {state,start,end,change,percent:start?change/start*100:null};}).filter(row=>row.state.toLowerCase().includes(term)).sort((a,b)=>b.change-a.change); $('#fromHeader').textContent=from; $('#toHeader').textContent=to; $('#tableBody').innerHTML=rows.map(row=>`<tr><td><strong>${row.state}</strong></td><td>${fmt.format(row.start)}</td><td>${fmt.format(row.end)}</td><td class="${row.change>=0?'change-positive':'change-negative'}">${row.change>=0?'+':''}${fmt.format(row.change)}</td><td class="${row.percent===null?'':row.percent>=0?'change-positive':'change-negative'}">${row.percent===null?'New / no baseline':`${row.percent>=0?'+':''}${Math.round(row.percent)}%`}</td></tr>`).join(''); $('#tableStatus').textContent=`Showing ${fmt.format(rows.length)} states: ${from} compared with ${to}.`; }
     function renderComparisons() { renderTable(); }
